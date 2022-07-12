@@ -1,34 +1,41 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect } from 'react';
 import planetsContext from '../context/planetsContext';
 
 const PlanetsTable = () => {
-  const { data } = useContext(planetsContext);
+  const { data, getPlanets } = useContext(planetsContext);
+  const headers = data.length ? Object.keys(data[0]) : [];
 
-  const headers = Object.keys(data[0]);
+  useEffect(() => {
+    getPlanets();
+  }, []);
 
   return (
 
     <table>
-      <tr>
+      <thead>
+        <tr>
+          {
+            headers.map((header) => (
+              <th key={ header }>{header}</th>
+            ))
+          }
+        </tr>
+      </thead>
+      <tbody>
         {
-          headers.map((header) => (
-            <th key={ header }>{header}</th>
+          data.map((planet, i) => (
+            <tr key={ i }>
+              {
+                headers.map((header) => (
+                  <td key={ planet[header] }>
+                    {planet[header]}
+                  </td>
+                ))
+              }
+            </tr>
           ))
         }
-      </tr>
-      {
-        data.map((planet) => (
-          <tr key={ planet.name }>
-            {
-              headers.map((header) => (
-                <td key={ planet[header] }>
-                  {planet[header]}
-                </td>
-              ))
-            }
-          </tr>
-        ))
-      }
+      </tbody>
     </table>
 
   );
