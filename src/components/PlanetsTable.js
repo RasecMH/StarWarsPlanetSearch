@@ -2,10 +2,12 @@ import React, { useContext, useEffect } from 'react';
 import planetsContext from '../context/planetsContext';
 
 const PlanetsTable = () => {
+  const NEGATIVE_NUMBER = -1;
   const { data,
     getPlanets,
     filterByNumericValues,
-    filterByName: { name } } = useContext(planetsContext);
+    filterByName: { name },
+    order } = useContext(planetsContext);
   const headers = data.length ? Object.keys(data[0]) : [];
 
   useEffect(() => {
@@ -25,8 +27,29 @@ const PlanetsTable = () => {
         filteredData = filteredData.filter((d) => d[el.column] === el.value);
       }
     });
-    console.log(filteredData);
-    return filteredData;
+    const sortedDataAlphabetical = [...filteredData].sort((a, b) => {
+      if (a.name > b.name) {
+        return 1;
+      }
+      if (a.name < b.name) {
+        return NEGATIVE_NUMBER;
+      }
+      return 0;
+    });
+    return order.column === 'name' ? sortedDataAlphabetical : filteredData;
+  };
+
+  const orderData = (a, b) => {
+    if (a === 'unknown' || b === 'unknown') {
+      return a !== 'unknown' ? NEGATIVE_NUMBER : 1;
+    }
+    if (a > b) {
+      return order.sort === 'ASC' ? 1 : NEGATIVE_NUMBER;
+    }
+    if (a < b) {
+      return order.sort === 'ASC' ? NEGATIVE_NUMBER : 1;
+    }
+    return 0;
   };
 
   return (
@@ -44,6 +67,16 @@ const PlanetsTable = () => {
       <tbody>
         {
           filterData()
+            .sort((a, b) => {
+              if (Number.isNaN(Number(a[order.column]))
+                || Number.isNaN(Number(b[order.column]))) {
+                orderData(a[order.column], b[order.column]);
+              }
+
+              return order.sort === 'ASC'
+                ? a[order.column] - b[order.column]
+                : b[order.column] - a[order.column];
+            })
             .filter((planetFilter) => (
               planetFilter.name.includes(name)
             ))
@@ -51,7 +84,10 @@ const PlanetsTable = () => {
               <tr key={ i }>
                 {
                   headers.map((header) => (
-                    <td key={ planet[header] }>
+                    <td
+                      key={ planet[header] }
+                      data-testid={ header === 'name' ? 'planet-name' : '' }
+                    >
                       {planet[header]}
                     </td>
                   ))

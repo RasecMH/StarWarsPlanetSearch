@@ -16,6 +16,7 @@ const PlanetsProvider = ({ children }) => {
         value: '',
       },
     ],
+    order: { column: 'name', sort: 'ASC' },
   };
   const [state, setState] = useState(INITIAL_STATE);
 
@@ -27,6 +28,14 @@ const PlanetsProvider = ({ children }) => {
     });
     setState((oldState) => ({ ...oldState,
       data: planetsInfo }));
+  };
+
+  const changeOrder = (obj) => {
+    setState((oldState) => (
+      {
+        ...oldState,
+        order: obj,
+      }));
   };
 
   const filterTableByName = ({ target: { value } }) => {
@@ -60,7 +69,8 @@ const PlanetsProvider = ({ children }) => {
         filterTableByName,
         addNumericFilter,
         removeNumericFilter,
-        removeAllNumericFilters } }
+        removeAllNumericFilters,
+        changeOrder } }
     >
       {children}
     </planetsContext.Provider>

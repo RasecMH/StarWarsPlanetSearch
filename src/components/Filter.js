@@ -6,7 +6,8 @@ const Filter = () => {
     filterTableByName,
     addNumericFilter,
     removeNumericFilter,
-    removeAllNumericFilters } = useContext(planetsContext);
+    removeAllNumericFilters,
+    changeOrder } = useContext(planetsContext);
   const [numericForm, setNumericForm] = useState({
     column: 'population',
     comparison: 'maior que',
@@ -20,6 +21,7 @@ const Filter = () => {
     'rotation_period',
   ]);
   const [filterButtons, setFilterButtons] = useState([]);
+  const [order, setOrder] = useState({ column: 'population', sort: 'ASC' });
 
   console.log(options);
   console.log(filterButtons);
@@ -32,6 +34,12 @@ const Filter = () => {
     ));
     setNumericForm((oldState) => (
       { ...oldState, column: options[0] }
+    ));
+  };
+
+  const handleChange = ({ target }) => {
+    setOrder((oldState) => (
+      { ...oldState, [target.name]: target.value }
     ));
   };
 
@@ -138,6 +146,49 @@ const Filter = () => {
           </button>
         )
       }
+      <select
+        name="column"
+        data-testid="column-sort"
+        onChange={ handleChange }
+      >
+        {
+          options.map((header) => (
+            <option key={ header } value={ header }>
+              {header}
+            </option>
+          ))
+        }
+      </select>
+      <label htmlFor="asc">
+        <input
+          id="asc"
+          name="sort"
+          type="radio"
+          data-testid="column-sort-input-asc"
+          value="ASC"
+          onChange={ handleChange }
+        />
+        ASC
+      </label>
+      <label htmlFor="desc">
+        <input
+          id="desc"
+          name="sort"
+          type="radio"
+          data-testid="column-sort-input-desc"
+          value="DESC"
+          onChange={ handleChange }
+        />
+        DESC
+      </label>
+      <button
+        type="button"
+        data-testid="column-sort-button"
+        onClick={ () => changeOrder(order) }
+      >
+        Order
+
+      </button>
     </div>
   );
 };
