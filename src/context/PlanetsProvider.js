@@ -9,7 +9,13 @@ const PlanetsProvider = ({ children }) => {
     filterByName: {
       name: '',
     },
-    filterByNumericValue: [],
+    filterByNumericValues: [
+      {
+        column: '',
+        comparison: '',
+        value: '',
+      },
+    ],
   };
   const [state, setState] = useState(INITIAL_STATE);
 
@@ -20,21 +26,29 @@ const PlanetsProvider = ({ children }) => {
       return result;
     });
     setState((oldState) => ({ ...oldState,
-      data: planetsInfo,
-      planetsData: planetsInfo }));
+      data: planetsInfo }));
   };
 
   const filterTableByName = ({ target: { value } }) => {
     setState((oldState) => (
       {
         ...oldState,
-        data: oldState.planetsData.filter((planet) => planet.name.includes(value)),
         filterByName: { name: value },
       }));
   };
 
+  const addNumericFilter = (obj) => {
+    setState((oldState) => ({ ...oldState,
+      filterByNumericValues: [...oldState.filterByNumericValues, obj] }));
+  };
+
   return (
-    <planetsContext.Provider value={ { ...state, getPlanets, filterTableByName } }>
+    <planetsContext.Provider
+      value={ { ...state,
+        getPlanets,
+        filterTableByName,
+        addNumericFilter } }
+    >
       {children}
     </planetsContext.Provider>
   );
