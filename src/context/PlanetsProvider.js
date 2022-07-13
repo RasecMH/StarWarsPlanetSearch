@@ -42,12 +42,25 @@ const PlanetsProvider = ({ children }) => {
       filterByNumericValues: [...oldState.filterByNumericValues, obj] }));
   };
 
+  const removeNumericFilter = (obj) => {
+    setState((oldState) => ({ ...oldState,
+      filterByNumericValues: oldState
+        .filterByNumericValues.filter((el) => el.column !== obj) }));
+  };
+
+  const removeAllNumericFilters = () => {
+    setState((oldState) => ({ ...oldState,
+      filterByNumericValues: [] }));
+  };
+
   return (
     <planetsContext.Provider
       value={ { ...state,
         getPlanets,
         filterTableByName,
-        addNumericFilter } }
+        addNumericFilter,
+        removeNumericFilter,
+        removeAllNumericFilters } }
     >
       {children}
     </planetsContext.Provider>

@@ -3,19 +3,62 @@ import planetsContext from '../context/planetsContext';
 
 const Filter = () => {
   const { filterByName: { name },
-    filterTableByName, data, addNumericFilter } = useContext(planetsContext);
+    filterTableByName,
+    addNumericFilter,
+    removeNumericFilter,
+    removeAllNumericFilters } = useContext(planetsContext);
   const [numericForm, setNumericForm] = useState({
     column: 'population',
     comparison: 'maior que',
     value: 0,
   });
+  const [options, setOptions] = useState([
+    'population',
+    'surface_water',
+    'diameter',
+    'orbital_period',
+    'rotation_period',
+  ]);
+  const [filterButtons, setFilterButtons] = useState([]);
 
-  const options = data.length
-    ? Object.keys(data[0])
-      .filter((planetKey) => !Number.isNaN(Number(data[0][planetKey])))
-      .reverse()
-    : ['passou'];
-  // console.log(typeof data[0].rotation_period === 'number');
+  console.log(options);
+  console.log(filterButtons);
+
+  const handleSubmit = () => {
+    addNumericFilter(numericForm);
+    setFilterButtons((oldState) => ([...oldState, numericForm]));
+    setOptions((oldState) => (
+      [...oldState.filter((option) => option !== numericForm.column)]
+    ));
+    setNumericForm((oldState) => (
+      { ...oldState, column: options[0] }
+    ));
+  };
+
+  const removeFilter = ({ target: { value } }) => {
+    console.log(value);
+    removeNumericFilter(value);
+    setOptions((oldState) => (
+      [...oldState, value]
+    ));
+    setFilterButtons((oldState) => ([...oldState.filter((btn) => btn.column !== value)]));
+  };
+
+  const removeAllFilters = () => {
+    removeAllNumericFilters();
+    setOptions([
+      'population',
+      'surface_water',
+      'diameter',
+      'orbital_period',
+      'rotation_period',
+    ]);
+    setFilterButtons([]);
+    setNumericForm((oldState) => (
+      { ...oldState, column: options[0] }
+    ));
+  };
+
   return (
     <div>
       <input
@@ -64,11 +107,37 @@ const Filter = () => {
       <button
         type="button"
         data-testid="button-filter"
-        onClick={ () => addNumericFilter(numericForm) }
+        onClick={ handleSubmit }
       >
         Ok
 
       </button>
+      {
+        filterButtons.map((btn) => (
+          <div data-testid="filter" key={ btn.column }>
+            <button
+              type="button"
+              onClick={ removeFilter }
+              value={ btn.column }
+            >
+              {`${btn.column} ${btn.comparison} ${btn.value} x`}
+            </button>
+          </div>
+        ))
+      }
+
+      {
+        filterButtons.length > 0 && (
+          <button
+            type="button"
+            onClick={ removeAllFilters }
+            data-testid="button-remove-filters"
+          >
+            Remove All
+
+          </button>
+        )
+      }
     </div>
   );
 };
