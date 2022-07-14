@@ -4,7 +4,7 @@ const getPlanetsData = async () => {
   const response = await fetch(STAR_WARS_API_URL);
   const json = await response.json();
 
-  return response.ok ? Promise.resolve(json) : Promise.reject(json);
+  return json;
 };
 
 export default getPlanetsData;

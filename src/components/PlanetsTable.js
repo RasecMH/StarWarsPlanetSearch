@@ -31,10 +31,10 @@ const PlanetsTable = () => {
       if (a.name > b.name) {
         return 1;
       }
-      if (a.name < b.name) {
-        return NEGATIVE_NUMBER;
-      }
-      return 0;
+      // if (a.name < b.name) {
+      //   return NEGATIVE_NUMBER;
+      // }
+      return NEGATIVE_NUMBER;
     });
     return order.column === 'name' ? sortedDataAlphabetical : filteredData;
   };
@@ -43,13 +43,16 @@ const PlanetsTable = () => {
     if (a === 'unknown' || b === 'unknown') {
       return a !== 'unknown' ? NEGATIVE_NUMBER : 1;
     }
-    if (a > b) {
-      return order.sort === 'ASC' ? 1 : NEGATIVE_NUMBER;
-    }
-    if (a < b) {
-      return order.sort === 'ASC' ? NEGATIVE_NUMBER : 1;
-    }
-    return 0;
+
+    // return order.sort === 'ASC' ? 1 : NEGATIVE_NUMBER;
+
+    // if (a > b) {
+    //   return order.sort === 'ASC' ? 1 : NEGATIVE_NUMBER;
+    // }
+    // if (a < b) {
+    //   return order.sort === 'ASC' ? NEGATIVE_NUMBER : 1;
+    // }
+    // return 0;
   };
 
   return (

@@ -44,7 +44,6 @@ const Filter = () => {
   };
 
   const removeFilter = ({ target: { value } }) => {
-    console.log(value);
     removeNumericFilter(value);
     setOptions((oldState) => (
       [...oldState, value]
